@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets\bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets\all.css" />
+    <script type="text/javascript" src="/javascripts\jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts\bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#submit').click(function () {
+                console.log($("#to").text().replace(/ /g,''));
+                var request = {
+                    from: $("#accountName").val(),
+                    to: $("#to").text().replace(/ /g,''),
+                    privateKey: $("#PrivateKey").val(),
+                    amount: $("#amount").val(),
+                    currency: $("#currency").val()
+                };
+                console.log(request);
+                $.ajax({
+                    method: "POST",
+                    url: '/payment',
+                    data: request
+                })
+                    .done(function (response) {
+                        window.location = "/success.html?" + response;
+                    })
+                    .catch(function (err) {
+                        window.location = "/failure.html";
+                    })
+
+            });
+        });
+
+    </script>
+</head>
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+        <img src="/images/logohnx.png" width="30" height="30" class="d-inline-block align-top" alt=""> Human Experience
+    </a>
+</nav>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="form-group">
+                        <input type="text" id="accountName" class="form-control" aria-describedby="EOS Account Name" placeholder="EOS Account Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="PrivateKey" placeholder="Private Key">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="amount" class="form-control" placeholder="Amount" aria-describedby="Amount">
+                    </div>
+                    <div class="form-group">
+                        <select id="currency" class="form-control">
+                            <option value="EOS">EOS</option>
+                            <option value="JUNGLE">JUNGLE</option>
+                        </select>
+                    </div>
+                    <button id="submit" class="btn btn-primary">Submit</button>
+                    <span id="to" hidden><%= to %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
