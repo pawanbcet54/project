@@ -29,11 +29,7 @@ exports.updateOfflineStatus = function () {
 }
 
 exports.updateOnlineStatusToTrue = function (user) {
-    let userSchema = new onlineUser({
-        user: user,
-        online: true
-    });
-    return userSchema.updateOne(userSchema)
+    return onlineUser.updateOne({ user: user }, { $set: { online: true } })
         .then(function (response) {
             return response;
         })
