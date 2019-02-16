@@ -6,9 +6,9 @@ var social = require('./socialMediaSchema.js')
 
 exports.addOnlineUser = function (user) {
     let userSchema = new onlineUser({
-        user: user
+        user: user,
+        online: true
     });
-    console.log(user);
     return userSchema.save(userSchema)
         .then(function (response) {
             return response;
@@ -18,10 +18,39 @@ exports.addOnlineUser = function (user) {
         })
 };
 
-exports.getOnlineUser = function () {
-    return onlineUser.find({})
+exports.updateOfflineStatus = function () {
+    return onlineUser.updateMany({}, { $set: { online: false } })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
+}
+
+exports.updateOnlineStatusToTrue = function (user) {
+    let userSchema = new onlineUser({
+        user: user,
+        online: true
+    });
+    return userSchema.updateOne(userSchema)
         .then(function (response) {
             return response;
+        })
+        .catch(function (error) {
+            return error;
+        })
+};
+
+exports.getOnlineUser = function () {
+    return onlineUser.find({
+        online: true
+    })
+        .then(function (response) {
+            var responseToReturn = response.map(function (item) {
+                return item.user;
+            });
+            return responseToReturn;
         })
         .catch(function (error) {
             return error;
@@ -48,19 +77,19 @@ exports.deleteOnlineUser = function (user) {
         })
 };
 
-exports.deleteAllOnlineUsers = function(){
+exports.deleteAllOnlineUsers = function () {
     return onlineUser.deleteMany()
-    .then(function(response){
-        return response;
-    })
-    .catch(function(error){
-        return error;
-    })
+        .then(function (response) {
+            return response;
+        })
+        .catch(function (error) {
+            return error;
+        })
 };
 
 exports.deleteMessage = function (id) {
     console.log(id);
-    return chat.deleteOne({_id: id})
+    return chat.deleteOne({ _id: id })
         .then(function (response) {
             console.log(response);
             return response;
@@ -99,8 +128,10 @@ exports.removeChatMessage = function (time) {
 */
 
 exports.getChatMessage = function (to, from) {
-    return chat.find({$or:[{to: to},{from:to}, {to: from}, {from: from}]})
+    return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date').limit(parseInt(process.env.MessageLimitInOneRequest))
         .then(function (response) {
+            if (response.length > 50)
+                response.slice(Math.max(arr.length - 50, 1))
             return response;
         })
         .catch(function (error) {
@@ -118,36 +149,35 @@ exports.validateChatMessage = function (obj) {
         })
 };
 
-exports.addSocialMediaUsers = function(user){
-   var request = new social({
+exports.addSocialMediaUsers = function (user) {
+    var request = new social({
         user: user,
         authorised: true
     });
     return social.find({
-        user:user
+        user: user
     })
-    .then(function(response){
-        if(response.length == 0){
-           return request.save() ;
-        }
-        else
-        {
-            return null;
-        }
-    })
-    .then(function(response){
-       return response;
-    })
-    .catch(function(error){
-        return error;
-    })
+        .then(function (response) {
+            if (response.length == 0) {
+                return request.save();
+            }
+            else {
+                return null;
+            }
+        })
+        .then(function (response) {
+            return response;
+        })
+        .catch(function (error) {
+            return error;
+        })
 };
-exports.getSocialMediaUsers = function(){
-     return social.find()
-     .then(function(response){
-        return response;
-     })
-     .catch(function(error){
-         return error;
-     })
- }
+exports.getSocialMediaUsers = function () {
+    return social.find()
+        .then(function (response) {
+            return response;
+        })
+        .catch(function (error) {
+            return error;
+        })
+}

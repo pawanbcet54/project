@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 var fs = require('fs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-//var cron = require('./config/cronJob.js');
+var cron = require('./config/cronJob.js');
 var cors = require('cors');
 
 var app = express();
@@ -61,4 +61,6 @@ app.use(function (err, req, res, next) {
 /* This is no more required as expiration is setup in db itself
 cron.cleanupDB(process.env.ThresholdTime);
 */
+// This updated the online status to false so that user gets online users
+cron.updateOfflineStatus();
 module.exports = app;

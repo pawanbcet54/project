@@ -17,17 +17,22 @@ router.post('/addOnlineUser', function (req, res, next) {
       .then(function (response) {
         if (response)
           if (response.length > 0) {
-            res.json("Error: The User: " + req.body.user + " already exist!!");
-            return null;
+            console.log('The User length is more' + response.length);
+            return db.updateOnlineStatusToTrue(req.body.user)
           }
-        return db.addOnlineUser(req.body.user);
+          else {
+            return db.addOnlineUser(req.body.user);
+          }
       })
       .then(function (response) {
-        if (response != null) {
+        if (response != null || response != undefined) {
           var finalResponse = response.map(function (items) {
             return items.user;
           })
           res.json(finalResponse);
+        }
+        else{
+          res.json(response);
         }
       })
       .catch(function (error) {
@@ -39,10 +44,7 @@ router.post('/addOnlineUser', function (req, res, next) {
 router.get('/getOnlineUser', function (req, res, next) {
   return db.getOnlineUser()
     .then(function (response) {
-      var finalResponse = response.map(function (items) {
-        return items.user;
-      })
-      res.json(finalResponse);
+      res.json(response);
     })
     .catch(function (error) {
       res.json(error);
