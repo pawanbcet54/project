@@ -125,7 +125,7 @@ exports.removeChatMessage = function (time) {
 
 exports.getChatMessage = function (to, from) {
     if (to == 'Public') 
-        return chat.find({ $or: [{ to: to }, { from: from }] }).sort('-date')
+        return chat.find({ $or: [{ to: to }] }).sort('-date')
     else
         return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date')
             .then(function (response) {
