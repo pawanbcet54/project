@@ -124,10 +124,8 @@ exports.removeChatMessage = function (time) {
 */
 
 exports.getChatMessage = function (to, from) {
-    return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date').limit(parseInt(process.env.MessageLimitInOneRequest))
+    return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date')
         .then(function (response) {
-            if (response.length > 50)
-                response.slice(Math.max(arr.length - 50, 1))
             return response;
         })
         .catch(function (error) {
