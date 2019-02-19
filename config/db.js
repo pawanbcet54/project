@@ -124,13 +124,16 @@ exports.removeChatMessage = function (time) {
 */
 
 exports.getChatMessage = function (to, from) {
-    return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date')
-        .then(function (response) {
-            return response;
-        })
-        .catch(function (error) {
-            return error;
-        })
+    if (to == 'Public') 
+        return chat.find({ $or: [{ to: to }, { from: from }] }).sort('-date')
+    else
+        return chat.find({ $or: [{ to: to }, { from: to }, { to: from }, { from: from }] }).sort('-date')
+            .then(function (response) {
+                return response;
+            })
+            .catch(function (error) {
+                return error;
+            })
 };
 
 exports.validateChatMessage = function (obj) {
